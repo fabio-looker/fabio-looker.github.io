@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Welcome
+title: Auto Generating LookML for EAV Schemas
 categories: Data
 ---
 
