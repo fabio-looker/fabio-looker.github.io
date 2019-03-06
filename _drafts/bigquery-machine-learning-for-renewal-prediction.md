@@ -136,7 +136,7 @@ view: prs_dataset {
           END
           
       -- This maps lead_periods to a specific date for joining further tables 
-      LEFT JOIN ${metafore_dates.SQL_TABLE_NAME} as prediction_date
+      LEFT JOIN ${prs_dates.SQL_TABLE_NAME} as prediction_date
         ON prediction_date.pk1_date = CASE
           WHEN objectives.result IS NOT NULL
           THEN DATE_TRUNC(DATE_ADD(
@@ -223,15 +223,9 @@ view: prs_prediction {
 ### Inspect & Iterate
 
 
-
-### Spread Your Wings, Little Predictive Model
-
-
-
-
 ### It was foretold...
 
-Finally, you probably want to, you know, _keep_ your predictions so that you can look at them after the fact. (At least that's what my predictive model told me about you)
+Now we have a list of predictions. Hoorah! You probably want to, you know, _save_ them so that you can look at them after the fact. (At least that's what my predictive model told me about you)
 
 Persisting data with Looker sometimes requires a bit of creativity, but for this case, it's pretty simple in the end. I've asked our DBA to create another schema that our PDT connection is allowed to write to, and then I use the following PDT definition to maintain a log table whenever a new version of the predictive model is in production:
 
@@ -249,7 +243,7 @@ view: prs_prediction_log {
         renewal_prob FLOAT64
       )
       ;;
-      sql_step: CREATE TABLE ${SQL_TABLE_NAME} AS
+      sql_step: CREATE TABLE ${SQL_TABLE_NAME} AS SELECT
           COALESCE(orig.pk2_prediction_date, incr.pk2_prediction_date) as pk2_prediction_date,
           COALESCE(orig.pk2_opportunity_id,  incr.pk2_opportunity_id ) as pk2_opportunity_id,
           ---
@@ -257,24 +251,30 @@ view: prs_prediction_log {
         FROM misc.prs_prediction_log_prod AS orig
         FULL OUTER JOIN (
           SELECT
-            DATE_TRUNC(MONTH, CURRENT_DATE('America/Los_Angeles')) as pk2_prediction_date,
+            DATE_TRUNC(CURRENT_DATE('America/Los_Angeles'), MONTH) as pk2_prediction_date,
             pk2_opportunity_id,
             ---
-            (SELECT prob FROM UNNEST(${TABLE}.predicted_result_probs) WHERE label=1) as renewal_prob
+            (SELECT prob FROM UNNEST(predicted_result_probs) WHERE label=1) as renewal_prob
           FROM ${prs_prediction.SQL_TABLE_NAME}
           ) AS incr
           ON  incr.pk2_prediction_date = orig.pk2_prediction_date
           AND incr.pk2_opportunity_id  = orig.pk2_opportunity_id
       ;;
       sql_step:
-        -- if prod CREATE OR REPLACE TABLE misc.prs_prediction_log_prod PARTITION BY prediction_date AS
+        -- if prod CREATE OR REPLACE TABLE misc.prs_prediction_log_prod AS
         SELECT * FROM ${SQL_TABLE_NAME}
       ;;
     }
   }
   dimension: pk2_prediction_date {hidden: yes}
   dimension: pk2_opportunity_id {hidden: yes}
+  dimension: prediction_date {type:date datatype: date sql:${TABLE}.pk2_prediction_date;;}
   dimension: renewal_prob {}
 }
 ```
 </details>
+
+### Spread Your Wings, Little Predictive Model
+
+
+
