@@ -1,4 +1,7 @@
+.post img {display: block; width: 100%;}
 d-b {display: block}
+d-i {display: inline}
+d-ib {display: inline-block;}
 w-full {width: 100%}
 /*****************************************************************************/
 /*
