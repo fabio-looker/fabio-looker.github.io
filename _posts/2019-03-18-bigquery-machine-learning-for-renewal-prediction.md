@@ -227,7 +227,7 @@ view: prs_prediction {
 
 In addition to simply training and running the model, let's add a bit of instrumentation so we can summarize what happened during our training and the quality of our model. We'll use both some of the static evaluation functions that BigQuery provides, but also comparisons between the predictions and actuals for our holdout set (last month's renewals).
 
-![Model performance dashboard](../assets/img/2019-03-12-model-performance-dashboard.png)
+<img alt="Model performance dashboard" class="d-b w-full" src="../assets/img/2019-03-12-model-performance-dashboard.png" />
 
 As an added bonus, the model inspection dashboard in dev mode makes a great place to trigger re-training of our model whenever we update the feature set in our SQL. Since Looker already maintains separate SQL table names for changes we make in dev mode, we can safely test out features in our dev mode without affecting the model and predictions in production. 
 
