@@ -3,6 +3,21 @@ layout: default
 title: Home
 ---
 
-{% assign page = site.posts.first %}
-{% assign content = page.content %}
-{% include post.html %}
+<div class="content" id="home">
+	<div id="sidebar-button">
+		<img src="/assets/img/sidebar-button.png">
+	</div>
+	<div class="home-content">
+		<div style="height:4em"></div>
+		<div>Latest Post:</div>
+		<a href="{{ site.posts.first.url }}">
+			<div>
+				<b>{{ site.posts.first.title }}</b>
+				<br />
+				<span id="date">{{ site.posts.first.date | date_to_string }}</span>
+				<br />
+				<span class="post-snippet">{{ site.posts.first.content | strip_html | truncatewords:75 }}...</span>
+			</div>
+		</a>
+	</div>
+</div>

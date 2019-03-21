@@ -2,13 +2,14 @@
 layout: post
 title: A Hands-On Example with Looker & BQML - Predicting SaaS Renewals
 categories: Data
+cover: cover.jpeg
 ---
 
 As a Customer Success Engineer at [Looker](https://looker.com/), in addition to guiding customers on their data architecture, I also regularly build out technical solutions for our internal customer success functions. The one I'm going to be sharing today is our predictive renewal score, and the technologies I'll be demonstrating are Looker and [BigQuery's Machine Learning service](https://cloud.google.com/bigquery/docs/bigqueryml-intro), which combine to make this end-to-end solution super fast to build out, enhance, and maintain.
 
 So, what is this predictive renewal score? A score from 0 to 100% that estimates the likelihood that a given customer will renew. In practice, it actually has a few distinct functions within our organization - 
 
- - **Summarizing score** - When a Customer Success Manager or Account Executive wants to get a feel for a specific account, this is a composite score that can help them get a quick first sense for where the customer is overall, without having to individually consider and integrate dozens of aspects of the customer's profile.
+ - **Summarizing score** - When a Customer Success Manager or Account Executive wants to get a feel for a specific account, this is a composite score that can help them get a quick first sense for where the customer is overall, without having to individually consider and integrate dozens of aspects of the customer's profile. To help with this, I also color code the score into three tiers - red/yellow/green.
  - **Prioritization feature** - When a Customer Success Manager wants to proactively allocate their time within a pool of accounts, they can use this score in a first pass over a list to help in prioritizing.
  - **Forecasting input** - Since the score represents a probability of renewing, we can use it for forecasting. We simply multiply it by the account's Annual Contract Value and sum up these products to get the total expected dollars renewing across a set of accounts. We can slice and dice this by account owners, account segments, regions, etc.
 
@@ -227,7 +228,7 @@ view: prs_prediction {
 
 In addition to simply training and running the model, let's add a bit of instrumentation so we can summarize what happened during our training and the quality of our model. We'll use both some of the static evaluation functions that BigQuery provides, but also comparisons between the predictions and actuals for our holdout set (last month's renewals).
 
-![Model performance dashboard](../assets/img/2019-03-12-model-performance-dashboard.png)
+![Model performance dashboard](model-performance-dashboard.png)
 
 As an added bonus, the model inspection dashboard in dev mode makes a great place to trigger re-training of our model whenever we update the feature set in our SQL. Since Looker already maintains separate SQL table names for changes we make in dev mode, we can safely test out features in our dev mode without affecting the model and predictions in production. 
 
@@ -742,7 +743,8 @@ Luckily, Looker excels at that - I just add a few lines to the broader LookML pr
 
 With that, our work is done - for now! 
 
-** Footnotes **
+**Footnotes**
 
 <a name="1">[1]</a> Before implementing this in BigQuery, I was doing predictions using a decision tree algorithm. I think that the decision tree algorithm may have been better suited to some potentially more complex interactions present with the lead_periods variable. However, the requirement to use a logistic regression didn't dissuade me from moving the solution to BQ, since BQ greatly improves the speed at which I can iterate on the feature set, meaning I can more efficiently optimize the model's performance to make the model more powerful overall, even if the decision tree algorithm was a better fit for my initial dataset.
 
+Cover photo by [https://unsplash.com/@visualworld](https://unsplash.com/@visualworld)

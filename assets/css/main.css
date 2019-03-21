@@ -1,10 +1,15 @@
 .post img {display: block; width: 100%;}
 .post h2 {margin-top:1em}
 .post h3 {margin-top:1em}
+.post-snippet {color:#555;}
 d-b {display: block}
 d-i {display: inline}
 d-ib {display: inline-block;}
 w-full {width: 100%}
+#cover-photo-container{width:100%;max-height:320px;overflow: hidden;position:relative;}
+#cover-overlay {height:100%; width:100%;position:absolute;
+	background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(0,0,0,0.5) 100%);
+	}
 /*****************************************************************************/
 /*
 /* Common
@@ -152,7 +157,7 @@ a:hover {
   text-transform: uppercase;
 }
 
-.post {
+.post,.home-content {
   line-height: 24px;
   max-width: 725px;
   clear: both;

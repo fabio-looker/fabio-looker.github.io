@@ -4,7 +4,12 @@
   </div>
   <div id="post-info">
     <div id="cover-photo-container">
-      <img id="cover-photo" src="/assets/img/{{ page.cover }}">
+		<div id="cover-overlay"></div>
+		{%if page.cover %}
+		<img id="cover-photo" src="{{ page.cover }}">
+		{%else%}
+		<!--<img id="cover-photo" src="/assets/img/default-cover.png">-->
+		{%endif%}
     </div>
     <div id="info-container">
       <h1 id="title">{{ page.title }}</h1>
