@@ -2,7 +2,7 @@
 layout: post
 title: A Hands-On Example with Looker & BQML - Predicting SaaS Renewals
 categories: Data
-cover: cover.jpeg
+cover: ../assets/covers/glacier.jpeg
 ---
 
 As a Customer Success Engineer at [Looker](https://looker.com/), in addition to guiding customers on their data architecture, I also regularly build out technical solutions for our internal customer success functions. The one I'm going to be sharing today is our predictive renewal score, and the technologies I'll be demonstrating are Looker and [BigQuery's Machine Learning service](https://cloud.google.com/bigquery/docs/bigqueryml-intro), which combine to make this end-to-end solution super fast to build out, enhance, and maintain.
@@ -228,7 +228,7 @@ view: prs_prediction {
 
 In addition to simply training and running the model, let's add a bit of instrumentation so we can summarize what happened during our training and the quality of our model. We'll use both some of the static evaluation functions that BigQuery provides, but also comparisons between the predictions and actuals for our holdout set (last month's renewals).
 
-![Model performance dashboard](model-performance-dashboard.png)
+![Model performance dashboard](../assets/img/bqml-model-performance-dashboard.png)
 
 As an added bonus, the model inspection dashboard in dev mode makes a great place to trigger re-training of our model whenever we update the feature set in our SQL. Since Looker already maintains separate SQL table names for changes we make in dev mode, we can safely test out features in our dev mode without affecting the model and predictions in production. 
 
