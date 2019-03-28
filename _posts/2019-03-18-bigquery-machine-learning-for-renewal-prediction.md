@@ -2,7 +2,7 @@
 layout: post
 title: A Hands-On Example with Looker & BQML - Predicting SaaS Renewals
 categories: Data
-cover: ../assets/covers/glacier.jpeg
+cover: /assets/covers/glacier.jpeg
 ---
 
 As a Customer Success Engineer at [Looker](https://looker.com/), in addition to guiding customers on their data architecture, I also regularly build out technical solutions for our internal customer success functions. The one I'm going to be sharing today is our predictive renewal score, and the technologies I'll be demonstrating are Looker and [BigQuery's Machine Learning service](https://cloud.google.com/bigquery/docs/bigqueryml-intro), which combine to make this end-to-end solution super fast to build out, enhance, and maintain.
@@ -25,8 +25,7 @@ So, let’s start by defining what we’ll be predicting. In our case, we’re u
 
 <details><summary> See the code - Objectives </summary>
 
-```sql
-view: prs_objectives {
+<code style="white-space:pre">view: prs_objectives {
   derived_table: {
     sql:
         SELECT
@@ -55,7 +54,7 @@ view: prs_objectives {
   dimension: entity_id {hidden:yes}
   dimension: result {hidden:yes description: "The objective of the prediction, either a 0 or 1."}
 }
-```
+</code>
 
 **Notes for the above query**
 
@@ -95,8 +94,7 @@ From here, I can easily take one or more date-windowed datasets and join them on
 
 <details><summary>See the code - Dataset with Lead Periods </summary>
 
-```sql
-view: prs_dataset {
+<code style="white-space:pre">view: prs_dataset {
   derived_table: {
     persist_for: "2 hours"
     sql:
@@ -168,7 +166,7 @@ view: prs_dataset {
   dimension: result {}
   extends: [psr_features]
 }
-```
+</code>
 </details>
 
 ### Enter BigQuery Machine Learning 
@@ -183,8 +181,7 @@ But, I digress - Let's see the (surprisingly short) setup in LookML!
 
 <details><summary>See the code - Model & Prediction </summary>
 
-```SQL
-view: prs_model {
+<code style="white-space:pre">view: prs_model {
   derived_table: {
     datagroup_trigger: first_of_the_month
     sql_create:
@@ -220,7 +217,7 @@ view: prs_prediction {
   dimension: predicted_result {type: number}
   dimension: renewal_prob {type: number sql:(SELECT prob FROM UNNEST(${TABLE}.predicted_result_probs) WHERE label=1);; value_format_name: percent_2}
 }
-```
+</code>
 </details>
 
 
@@ -228,14 +225,13 @@ view: prs_prediction {
 
 In addition to simply training and running the model, let's add a bit of instrumentation so we can summarize what happened during our training and the quality of our model. We'll use both some of the static evaluation functions that BigQuery provides, but also comparisons between the predictions and actuals for our holdout set (last month's renewals).
 
-![Model performance dashboard](../assets/img/bqml-model-performance-dashboard.png)
+![Model performance dashboard](/assets/img/bqml-model-performance-dashboard.png)
 
 As an added bonus, the model inspection dashboard in dev mode makes a great place to trigger re-training of our model whenever we update the feature set in our SQL. Since Looker already maintains separate SQL table names for changes we make in dev mode, we can safely test out features in our dev mode without affecting the model and predictions in production. 
 
 <details><summary>See the code - LookML</summary>
 
-```SQL
-    explore: prs_holdout {extends: [prs_joins]}
+<code style="white-space:pre">explore: prs_holdout {extends: [prs_joins]}
     explore: prs_evaluation {hidden:yes}
     explore: prs_roc {hidden:yes}
     explore: prs_training_info {hidden:yes}
@@ -392,14 +388,13 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
       }
 
     }
-```
+</code>
 
 </details>
 
 <details><summary>See the code - Dashboard</summary>
 
-```YAML
-    - dashboard: model_performance
+<code style="white-space:pre">- dashboard: model_performance
       title: Model Performance
       layout: newspaper
       elements:
@@ -671,7 +666,7 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
         col: 9
         width: 15
         height: 2
-```
+</code>
 
 </details>
 
@@ -683,8 +678,7 @@ Looker doesn't provide any native semantics for logging otherwise ephemeral data
 
 <details><summary>See the code - Prediction Log</summary>
 
-```SQL
-view: prs_prediction_log {
+<code style="white-space:pre">view: prs_prediction_log {
   derived_table: {
     datagroup_trigger: first_of_the_month
     create_process: {
@@ -723,7 +717,7 @@ view: prs_prediction_log {
   dimension: prediction_date {type:date datatype: date sql:${TABLE}.pk2_prediction_date;;}
   dimension: renewal_prob {}
 }
-```
+</code>
 </details>
 
 ### Spread Your Wings, Little Predictive Model
