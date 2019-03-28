@@ -670,56 +670,6 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
 
 </details>
 
-### It was foretold...
-
-Now we have a list of predictions, and we've validated that they're <s>accurate</s> accurate-ish. Hoorah! You probably want to, you know, <i>save</i> them so that you can look at them after the fact. (At least that's what my predictive model told me about you)
-
-Looker doesn't provide any native semantics for logging otherwise ephemeral data, but with a bit of creativity, it's not too tough. I've asked our DBA to create another schema that our PDT connection is allowed to write to, and then I use the "create_process" variant of PDTs to update the current month data in a statically-named historical table whenever the datagroup triggers on the first of the month, or whenever a new version of the PDT definition reaches production.
-
-<details><summary>See the code - Prediction Log</summary>
-
-<div class="code-block">view: prs_prediction_log {
-  derived_table: {
-    datagroup_trigger: first_of_the_month
-    create_process: {
-      sql_step: CREATE TABLE IF NOT EXISTS misc.prs_prediction_log_prod (
-        pk2_prediction_date DATE,
-        pk2_opportunity_id STRING,
-        ---
-        renewal_prob FLOAT64
-      )
-      ;;
-      sql_step: CREATE OR REPLACE TABLE ${SQL_TABLE_NAME} AS SELECT
-          COALESCE(orig.pk2_prediction_date, incr.pk2_prediction_date) as pk2_prediction_date,
-          COALESCE(orig.pk2_opportunity_id,  incr.pk2_opportunity_id ) as pk2_opportunity_id,
-          ---
-          COALESCE(incr.renewal_prob, orig.renewal_prob) as renewal_prob
-        FROM misc.prs_prediction_log_prod AS orig
-        FULL OUTER JOIN (
-          SELECT
-            DATE_TRUNC(CURRENT_DATE('America/Los_Angeles'), MONTH) as pk2_prediction_date,
-            pk2_opportunity_id,
-            ---
-            (SELECT prob FROM UNNEST(predicted_result_probs) WHERE label=1) as renewal_prob
-          FROM ${prs_prediction.SQL_TABLE_NAME}
-          ) AS incr
-          ON  incr.pk2_prediction_date = orig.pk2_prediction_date
-          AND incr.pk2_opportunity_id  = orig.pk2_opportunity_id
-      ;;
-      sql_step:
-        -- if prod CREATE OR REPLACE TABLE misc.prs_prediction_log_prod AS
-        SELECT * FROM ${SQL_TABLE_NAME}
-      ;;
-    }
-  }
-  dimension: pk2_prediction_date {hidden: yes}
-  dimension: pk2_opportunity_id {hidden: yes}
-  dimension: prediction_date {type:date datatype: date sql:${TABLE}.pk2_prediction_date;;}
-  dimension: renewal_prob {}
-}
-</div>
-</details>
-
 ### Spread Your Wings, Little Predictive Model
 
 So now that our scores are in a table in our datawarehouse, our job is done right? Right??
