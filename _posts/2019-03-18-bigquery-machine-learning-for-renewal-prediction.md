@@ -25,7 +25,7 @@ So, let’s start by defining what we’ll be predicting. In our case, we’re u
 
 <details><summary> See the code - Objectives </summary>
 
-<code style="white-space:pre">view: prs_objectives {
+<div class="code-block">view: prs_objectives {
   derived_table: {
     sql:
         SELECT
@@ -54,7 +54,7 @@ So, let’s start by defining what we’ll be predicting. In our case, we’re u
   dimension: entity_id {hidden:yes}
   dimension: result {hidden:yes description: "The objective of the prediction, either a 0 or 1."}
 }
-</code>
+</div>
 
 **Notes for the above query**
 
@@ -94,7 +94,7 @@ From here, I can easily take one or more date-windowed datasets and join them on
 
 <details><summary>See the code - Dataset with Lead Periods </summary>
 
-<code style="white-space:pre">view: prs_dataset {
+<div class="code-block">view: prs_dataset {
   derived_table: {
     persist_for: "2 hours"
     sql:
@@ -166,7 +166,7 @@ From here, I can easily take one or more date-windowed datasets and join them on
   dimension: result {}
   extends: [psr_features]
 }
-</code>
+</div>
 </details>
 
 ### Enter BigQuery Machine Learning 
@@ -181,7 +181,7 @@ But, I digress - Let's see the (surprisingly short) setup in LookML!
 
 <details><summary>See the code - Model & Prediction </summary>
 
-<code style="white-space:pre">view: prs_model {
+<div class="code-block">view: prs_model {
   derived_table: {
     datagroup_trigger: first_of_the_month
     sql_create:
@@ -217,7 +217,7 @@ view: prs_prediction {
   dimension: predicted_result {type: number}
   dimension: renewal_prob {type: number sql:(SELECT prob FROM UNNEST(${TABLE}.predicted_result_probs) WHERE label=1);; value_format_name: percent_2}
 }
-</code>
+</div>
 </details>
 
 
@@ -231,7 +231,7 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
 
 <details><summary>See the code - LookML</summary>
 
-<code style="white-space:pre">explore: prs_holdout {extends: [prs_joins]}
+<div class="code-block">explore: prs_holdout {extends: [prs_joins]}
     explore: prs_evaluation {hidden:yes}
     explore: prs_roc {hidden:yes}
     explore: prs_training_info {hidden:yes}
@@ -388,13 +388,13 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
       }
 
     }
-</code>
+</div>
 
 </details>
 
 <details><summary>See the code - Dashboard</summary>
 
-<code style="white-space:pre">- dashboard: model_performance
+<div class="code-block">- dashboard: model_performance
       title: Model Performance
       layout: newspaper
       elements:
@@ -666,7 +666,7 @@ As an added bonus, the model inspection dashboard in dev mode makes a great plac
         col: 9
         width: 15
         height: 2
-</code>
+</div>
 
 </details>
 
@@ -678,7 +678,7 @@ Looker doesn't provide any native semantics for logging otherwise ephemeral data
 
 <details><summary>See the code - Prediction Log</summary>
 
-<code style="white-space:pre">view: prs_prediction_log {
+<div class="code-block">view: prs_prediction_log {
   derived_table: {
     datagroup_trigger: first_of_the_month
     create_process: {
@@ -717,7 +717,7 @@ Looker doesn't provide any native semantics for logging otherwise ephemeral data
   dimension: prediction_date {type:date datatype: date sql:${TABLE}.pk2_prediction_date;;}
   dimension: renewal_prob {}
 }
-</code>
+</div>
 </details>
 
 ### Spread Your Wings, Little Predictive Model

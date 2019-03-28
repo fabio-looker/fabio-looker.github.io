@@ -2,6 +2,7 @@
 .post h2 {margin-top:1em}
 .post h3 {margin-top:1em}
 .post-snippet {color:#555;}
+.code-block {display:block; white-space: pre; border: 1px solid #ddd; background-color: #eef; padding: 0 .2em;}
 d-b {display: block}
 d-i {display: inline}
 d-ib {display: inline-block;}
@@ -10,6 +11,7 @@ w-full {width: 100%}
 #cover-overlay {height:100%; width:100%;position:absolute;
 	background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(0,0,0,0.5) 100%);
 	}
+
 /*****************************************************************************/
 /*
 /* Common
