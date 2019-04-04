@@ -90,7 +90,7 @@ In our LookML/SQL, I call this concept `lead_periods`. Whenever a renewal is in 
 | ... | ... | ... | ... | ... |
 
 
-From here, I can easily take one or more date-windowed datasets and join them onto those "lead dates", even if there is overlap between the windows and multiple lead dates. For example, if one of the features in the dataset were "how many users used the service in the trailing 8 weeks?", then most days in our raw usage date would need to affect multiple datapoints in the "lead dates" result. By having the trailing happen in a window function, we can easily handle these cases.
+From here, I can easily take one or more date-windowed datasets and join them onto those "lead dates", even if there is overlap between the windows and multiple lead dates. For example, if one of the features in the dataset were "how many users used the service in the trailing 8 weeks?", then most days in our raw usage data would need to affect multiple datapoints in the "lead dates" result. By having the trailing happen in a window function, we can easily handle these cases.
 
 <details><summary>See the code - Dataset with Lead Periods </summary>
 
@@ -175,7 +175,7 @@ Before I rebuilt this solution on BQML, going from dataset to predictions was a 
 
 Now? New predictions happen automatically, retraining happens automatically, and running a new model is just a page refresh.
 
-And not only does automatic mean less strife for me, it means I can now do more - like create multiple predictive scores based on different feature sets to help business users understand different facets of a customer's health. Maybe a customers is "yellow" overall, but "green" in terms of communication & contact, but "yellow" in terms of product usage & adoption - now that's actionable.
+And not only does automatic mean less strife for me, it means I can now do more - like create multiple predictive scores based on different feature sets to help business users understand different facets of a customer's health. Maybe a customer is "yellow" overall, but "green" in terms of communication & contact, but "yellow" in terms of product usage & adoption - now that's actionable.
 
 But, I digress - Let's see the (surprisingly short) setup in LookML!
 
