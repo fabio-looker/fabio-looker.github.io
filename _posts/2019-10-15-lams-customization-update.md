@@ -12,7 +12,7 @@ Also, if you'll be at JOIN, why not attend my presentation with Carl Anderson of
 
 # How come?
 
-Before we jump into it, some quick background. LAMS, or Look At Me Sideways, is an open-source LookML style guide and linter that I co-author. If you want to learn the basics, check out [this article].
+Before we jump into it, some quick background. LAMS, or Look At Me Sideways, is an open-source LookML style guide and linter that I co-author. If you want to learn the basics, check out [this article](https://discourse.looker.com/t/introducing-lams-a-lookml-style-guide-and-linter/10603).
 
 As it pertains to today's update, however, it's worth noting that LAMS was originally ONLY a style guide, and then had a linter built around it. What this means is that from day 1, the linter was super prescriptive and opinionated, telling everyone what they should be doing, walking around like it owned the place... :eye_roll:
 
@@ -26,15 +26,15 @@ Two is a pattern, so I figured there must be more people with the need to expres
 
 ## First, opting out of prescribed rules
 
-Although it has been possible to opt out of rules from day 1, it wasn't particularly clear in the docs, which I have learned through speakgin with several prospective/actual LAMS users. So, I've added a new section in the rule customization docs that talks about this in more detail.
+Although it has been possible to opt out of rules from day 1, it wasn't particularly clear in the docs, which I have learned through speaking with several prospective/actual LAMS users. So, I've added a new section in the rule customization docs that talks about this in more detail.
 
 ## Second, the legacy Javascript approach
 
-Also from day 1, we had the ability for specifying custom rules via Javascript. It was a great feature for telling an extensibility story, but it had some pain points:
+Also from day 1, we offered the ability to specify custom rules via Javascript. It was a great feature for telling an extensibility story, but it had some pain points:
 
 1. The Javascript had to be hosted externally. Not only was this inconvenient, but from a governance standpoint, it would be best if the rules were in the same git project as the rest of the model.
 2. The evaluation of the Javascript was done by the same runtime that was running LAMS itself, which put custom rules in a murky security context[1]. Essentially, using the feature meant anyone with access to the LookML project could also run code on your CI server. 
-3. Finally, and perhaps most importantly, the custom rules were not pleasant to write. You were expected to export a function which would be fed the entire LookML project, so you would inevitably have to have 30 lines of boilerplate JS for iterating through the project just to apply to the simplest possible of rules.
+3. Finally, and perhaps most importantly, the custom rules were not pleasant to write. You were expected to export a function which would be fed the entire LookML project, so you would inevitably have to have 30 lines of boilerplate JS for iterating through the project just to apply the simplest possible of rules.
 
 It may not come as a surprise, but I don't think any customers have actually used custom JS rules. I am glad we included them, but felt no guilt marking them as a legacy feature (which is just a console message if you do use them). And with that, we get to the biggest part of today's article...
 
@@ -44,7 +44,7 @@ So, I set out to build a new custom rules system. The first thing I did was to b
 
 Now, if you want to match dimensions, rather than write 12 lines of boilerplate javascript loops, you just declare your rule as `match: "dimension.*"`. Easy! Even better, not only did this hit on pain point #3, unwieldy rules, but also on pain point #1, because if rules are more succint, they can more readily be put inline in your LookML project.
 
-The one missing piece of the puzzle was how to specify the logic of the rule itself. For a little while, I did try to see if someone had recently built an _actually_ safe approach to evaluating untrusted Javascript. This is something I end up wanting every couple of years, and invariably the answer is no. This time around was no different[2].
+The one missing piece of the puzzle was how to specify the logic of the rule itself. To start, I did try to see if someone had recently built an _actually_ safe approach to evaluating untrusted Javascript. This is something I end up wanting every couple of years, and invariably the answer is no. This time around was no different[2].
 
 However, what I eventually found and was satisfied with was [Liyad](https://github.com/shellyln/liyad). It's a bit of a left-field choice, so I'll go ahead and acknowledge some downsides before going into why I ultimately picked it:
 
