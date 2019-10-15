@@ -40,7 +40,7 @@ It may not come as a surprise, but I don't think any customers have actually use
 
 ## Finally, the new in-project expression-based rules
 
-So, I set out to build a new custom rules system. The first thing I did was to borrow some inspiration from [Carl Anderson's Linter](https://github.com/ww-tech/lookml-tools/blob/master/README_DEVELOPER.md) and his approach to custom rules, which by declaring different rule "types" grealty reduces boilerplate. Taking it to a bit more abstract level, I decided that "dimension-level", "explore-level", etc. were all just matching a shape of LookML construct, so instead of enumerating a few specific types, I would leverage a general-purpose data-shape matching solution - JSONpath.
+So, I set out to build a new custom rules system. The first thing I did was to borrow some inspiration from [Carl Anderson's Linter](https://github.com/ww-tech/lookml-tools/blob/master/README_DEVELOPER.md) and his approach to custom rules, which by declaring different rule "types" greatly reduces boilerplate. Taking it to a bit more abstract level, I decided that "dimension-level", "explore-level", etc. were all just matching a shape of LookML construct, so instead of enumerating a few specific types, I would leverage a general-purpose data-shape matching solution - JSONpath.
 
 Now, if you want to match dimensions, rather than write 12 lines of boilerplate javascript loops, you just declare your rule as `match: "dimension.*"`. Easy! Even better, not only did this hit on pain point #3, unwieldy rules, but also on pain point #1, because if rules are more succint, they can more readily be put inline in your LookML project.
 
